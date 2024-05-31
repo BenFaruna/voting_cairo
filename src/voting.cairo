@@ -17,7 +17,7 @@ pub trait IVoting<TContractState> {
 }
 
 #[starknet::contract]
-mod Voting {
+pub mod Voting {
     use core::starknet::event::EventEmitter;
     use starknet::{ContractAddress, get_caller_address};
     use super::IVoting;
@@ -66,10 +66,10 @@ mod Voting {
 
     #[derive(Copy, Drop, Serde, PartialEq, starknet::Store)]
     pub struct Candidate {
-        id: u32,
-        name: felt252,
-        address: ContractAddress,
-        votes: u32,
+        pub id: u32,
+        pub name: felt252,
+        pub address: ContractAddress,
+        pub votes: u32,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -110,7 +110,7 @@ mod Voting {
         }
 
         fn get_winner(self: @ContractState) -> Candidate {
-            assert(!self.voting_ended.read(), 'VOTING NOT ENDED');
+            assert(self.voting_ended.read(), 'VOTING NOT ENDED');
             self.winner.read()
         }
 
@@ -196,7 +196,7 @@ mod Voting {
         }
 
         fn _is_voting_ended(self: @ContractState) {
-            assert(self.voting_ended.read(), 'VOTING ENDED');
+            assert(!self.voting_ended.read(), 'VOTING ENDED');
         }
     }
 }
